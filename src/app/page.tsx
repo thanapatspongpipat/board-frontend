@@ -1,101 +1,87 @@
+"use client";
+
+import { Button, Input } from "@nextui-org/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
+import { useState } from "react";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+export default function Login() {
+    //  const { data: session } = useSession();
+     const [email, setEmail] = useState("");
+     const [error, setError] = useState("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+     const handleSubmit = async (e: any) => {
+          e.preventDefault();
+          setError("");
+
+          const res = await signIn("credentials", {
+               redirect: false,
+               email,
+          });
+
+          if (res?.error) {
+               setError("Invalid credentials. Please try again.");
+          }
+     };
+     return (
+          <div className="h-screen w-full">
+               <div className="flex flex-col-reverse md:flex-row h-screen w-full bg-[#243831]">
+                    <div className="flex flex-col w-full justify-center gap-9 items-center h-full">
+                         <div className="flex flex-col justify-center gap-5 align-middle  px-10 w-full md:px-20 text-white h-full max-w-md">
+                              <div>
+                                   <span className="text-2xl text-white">
+                                        Sing In
+                                   </span>
+                              </div>
+
+                              <form onSubmit={handleSubmit}>
+                                   <div className="flex flex-col gap-5">
+                                        <Input
+                                             label="Username"
+                                             labelPlacement="outside"
+                                             type="email"
+                                             placeholder="Username"
+                                             value={email}
+                                             onChange={(e) =>
+                                                  setEmail(e.target.value)
+                                             }
+                                             required
+                                        />
+                                        <Button
+                                             type="submit"
+                                             className="text-white"
+                                             color="success"
+                                        >
+                                             Sign In
+                                        </Button>
+                                   </div>
+                              </form>
+                         </div>
+                    </div>
+                    <div className="h-3/5 md:w-4/5 md:h-full md:rounded-l-[36px] bg-[#2B5F44]">
+                         <div className="flex relative w-full h-full items-center justify-center">
+                              <div className="flex-col text-center">
+                                   <div>
+                                        <Image
+                                             className="w-md"
+                                             src="/assets/bg-login-1.png"
+                                             alt="Background Image"
+                                             layout="responsive" // Use fill to make it cover the parent
+                                             objectFit="fit" // Ensure the image covers the div
+                                             width={300}
+                                             height={250}
+                                        />
+                                   </div>
+
+                                   <div className="mt-6">
+                                        <span className="text-md md:text-2xl font-bold text-white">
+                                             a Board
+                                        </span>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+               </div>
+          </div>
+     );
 }
