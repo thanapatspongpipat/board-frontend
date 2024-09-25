@@ -30,7 +30,6 @@ const authOptions: NextAuthOptions = {
                               },
                          }
                     );
-                    console.log(res);
                     if (res.status == 401) {
                          console.log(res.statusText);
                          return null;
@@ -40,15 +39,20 @@ const authOptions: NextAuthOptions = {
                },
           }),
      ],
+     pages: {
+          signIn: '/',
+      },
+     secret: process.env.NEXTAUTH_SECRET,
      callbacks: {
           async jwt({ token, user }) {
-               console.log({ token, user });
                if (user) return { ...token, ...user };
                return token;
           },
           async session({ token, session }) {
                session.user = token.user;
                session.backendTokens = token.backendTokens;
+               console.log("Session", session);
+
                return session;
           },
      },

@@ -1,12 +1,13 @@
 "use client";
 
 import { Button, Input } from "@nextui-org/react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Login() {
-    //  const { data: session } = useSession();
+     const router = useRouter();
      const [email, setEmail] = useState("");
      const [error, setError] = useState("");
 
@@ -21,6 +22,8 @@ export default function Login() {
 
           if (res?.error) {
                setError("Invalid credentials. Please try again.");
+          } else {
+               router.push("/board");
           }
      };
      return (
