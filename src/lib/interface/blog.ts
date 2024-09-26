@@ -26,3 +26,13 @@ export enum Category {
      Exercise = "Exercise",
      Others = "Others",
 }
+
+export const CategoryLabels: { [key in Category]: string } = {
+     [Category.History]: "History",
+     [Category.Food]: "Food",
+     [Category.Pets]: "Pets",
+     [Category.Health]: "Health",
+     [Category.Fashion]: "Fashion",
+     [Category.Exercise]: "Exercise",
+     [Category.Others]: "Others",
+};

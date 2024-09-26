@@ -1,6 +1,7 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextAuthOptions } from "next-auth";
+import { BACKEND_URL } from "@/lib/basePath";
 
 const authOptions: NextAuthOptions = {
      providers: [
@@ -18,18 +19,15 @@ const authOptions: NextAuthOptions = {
                          return null;
                     }
                     const { email } = credentials;
-                    const res = await fetch(
-                         process.env.BACKEND_URL + "/auth/login",
-                         {
-                              method: "POST",
-                              body: JSON.stringify({
-                                   email,
-                              }),
-                              headers: {
-                                   "Content-Type": "application/json",
-                              },
-                         }
-                    );
+                    const res = await fetch(BACKEND_URL + "/auth/login", {
+                         method: "POST",
+                         body: JSON.stringify({
+                              email,
+                         }),
+                         headers: {
+                              "Content-Type": "application/json",
+                         },
+                    });
                     if (res.status == 401) {
                          console.log(res.statusText);
                          return null;
@@ -40,8 +38,8 @@ const authOptions: NextAuthOptions = {
           }),
      ],
      pages: {
-          signIn: '/',
-      },
+          signIn: "/",
+     },
      secret: process.env.NEXTAUTH_SECRET,
      callbacks: {
           async jwt({ token, user }) {
@@ -52,7 +50,6 @@ const authOptions: NextAuthOptions = {
                session.user = token.user;
                session.backendTokens = token.backendTokens;
                console.log("Session", session);
-
                return session;
           },
      },

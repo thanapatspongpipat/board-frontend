@@ -5,45 +5,64 @@ import {
      DialogTitle,
      FormControl,
      InputLabel,
+     NativeSelect,
      OutlinedInput,
      TextField,
 } from "@mui/material";
 import { Button, MenuItem, Select } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
-import { Category, createBlog } from "../../lib/interface/blog";
-import { createBlogPost } from "../../lib/service/blog.service";
+import React, { useEffect, useState } from "react";
+import { Blog, Category, createBlog } from "../../lib/interface/blog";
+import { createBlogPost, updateBlogPost } from "../../lib/service/blog.service";
 
 interface PropsModal {
      open: boolean;
      onClose: () => void;
+     initialData?: Blog | null;
 }
 
-const ModalFormPost: React.FC<PropsModal> = ({ open, onClose }) => {
-     const { data: session } = useSession(); 
+const ModalFormPost: React.FC<PropsModal> = ({
+     open,
+     onClose,
+     initialData,
+}) => {
+     const { data: session } = useSession();
      const [category, setCategory] = useState<Category | string>("");
      const [topic, setTopic] = useState<string>("");
-     const [content, setContent] = useState<string>(""); 
+     const [content, setContent] = useState<string>("");
 
      const handleSubmitForm = async () => {
           if (session) {
-              const data: createBlog = {
-                  category: category as Category, // Cast to Category
-                  topic, // Ensure the property name matches your interface
-                  content,
-                  authorId: session.user.id, // Use authorId from the session
-              };
-  
-              try {
-                  await createBlogPost(data);
-                  onClose();
-              } catch (error) {
-                  console.error("Error creating blog post:", error);
-              }
+               const data: createBlog = {
+                    category: category as Category, // Cast to Category
+                    topic, // Ensure the property name matches your interface
+                    content,
+                    authorId: session.user.id, // Use authorId from the session
+               };
+
+               try {
+                    if (initialData) {
+                         await updateBlogPost(String(initialData.id), data);
+                    } else {
+                         // Create a new post if no `initialData`
+                         await createBlogPost(data);
+                    }
+                    onClose();
+               } catch (error) {
+                    console.error("Error creating blog post:", error);
+               }
           } else {
-              console.error("User not authenticated.");
+               console.error("User not authenticated.");
           }
-      };
+     };
+
+     useEffect(() => {
+          if (open && initialData) {
+               setCategory(initialData.category.toString()); // Set category from initial data
+               setTopic(initialData.topic);
+               setContent(initialData.content);
+          }
+     }, [open, initialData]);
 
      return (
           <Dialog
@@ -53,10 +72,13 @@ const ModalFormPost: React.FC<PropsModal> = ({ open, onClose }) => {
                fullWidth
                maxWidth="md"
           >
-               <DialogTitle id="form-dialog-title">Create Post</DialogTitle>
+               <DialogTitle id="form-dialog-title">
+                    {initialData ? "Edit Post" : "Create Post"}{" "}
+               </DialogTitle>
                <DialogContent className="flex flex-col gap-y-5">
                     <FormControl fullWidth size="small" sx={{ marginTop: 2 }}>
                          <Select
+                              defaultSelectedKeys={[category]}
                               placeholder="Choose a community"
                               id="category"
                               value={category}
@@ -106,7 +128,7 @@ const ModalFormPost: React.FC<PropsModal> = ({ open, onClose }) => {
                          color="success"
                          className="text-white"
                     >
-                         Post
+                         {initialData ? "Update" : "Post"}
                     </Button>
                </DialogActions>
           </Dialog>

@@ -14,23 +14,28 @@ import React from "react";
 interface ListSideBarProps {
      colorFont: string;
 }
+interface LinkItem {
+     href: string;
+     text: string;
+     icon: React.ReactNode;
+}
 
+const linkList: LinkItem[] = [
+     { href: "/board", text: "Home", icon: <HomeIcon /> },
+     { href: "", text: "Our Blog", icon: <EditCalendarIcon /> }, // Update href as needed
+];
 const ListSideBar: React.FC<ListSideBarProps> = ({ colorFont }) => {
      return (
           <List
                className={`flex flex-col p-3 gap-2 w-full h-full text-${colorFont}`}
           >
-               {["Home", "Our Blog"].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                         <ListItemButton>
+               {linkList.map((link, index) => (
+                    <ListItem key={index} disablePadding>
+                         <ListItemButton href={link.href}>
                               <ListItemIcon className={`text-${colorFont}`}>
-                                   {index == 0 ? (
-                                        <HomeIcon />
-                                   ) : (
-                                        <EditCalendarIcon />
-                                   )}
+                                   {link.icon}
                               </ListItemIcon>
-                              <ListItemText primary={text} />
+                              <ListItemText primary={link.text} />
                          </ListItemButton>
                     </ListItem>
                ))}
