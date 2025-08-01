@@ -8,7 +8,7 @@ First, clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/thanapatspongpipat/data-wow-board-frontend
-cd data-wow-board-frontend
+cd board-frontend
 ```
 
 ## 2. Install Dependencies
